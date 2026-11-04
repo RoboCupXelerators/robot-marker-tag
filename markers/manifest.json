@@ -1,0 +1,40 @@
+{
+  "tags": [
+    {
+      "dictionary": "4x4_50",
+      "id": 7,
+      "size_mm": 80.0,
+      "modules": 6,
+      "module_mm": 13.33,
+      "quiet_zone_mm": 20.0,
+      "plate_mm": 2.0,
+      "relief_mm": 0.6,
+      "plate_xy_mm": [
+        120,
+        120
+      ],
+      "files": {
+        "3mf": "tag/aruco_4x4_50_id07_80mm.3mf",
+        "png": "markers/aruco_4x4_50_id07_80mm.png"
+      }
+    },
+    {
+      "dictionary": "4x4_50",
+      "id": 7,
+      "size_mm": 100.0,
+      "modules": 6,
+      "module_mm": 16.67,
+      "quiet_zone_mm": 20.0,
+      "plate_mm": 2.0,
+      "relief_mm": 0.6,
+      "plate_xy_mm": [
+        140,
+        140
+      ],
+      "files": {
+        "3mf": "tag/aruco_4x4_50_id07_100mm.3mf",
+        "png": "markers/aruco_4x4_50_id07_100mm.png"
+      }
+    }
+  ]
+}
