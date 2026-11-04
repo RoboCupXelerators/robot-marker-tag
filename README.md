@@ -1,78 +1,75 @@
 # robot-marker-tag
 
-机器人顶部 **ArUco 顶标**，给外部场地相机同时解算「位置 + 朝向」用。
-现成的 3MF（拓竹 / Bambu Studio 直接导入）+ 300 dpi PNG（纸质打印）。
+机器人顶部 **ArUco 顶标**：给外部场地相机同时解算「位置 + 朝向」。
+3MF 直接用拓竹（Bambu Studio）打，附 300 dpi PNG（纸贴版）。
+
+![preview](markers/preview_100mm.png)
 
 ## 规格
 
-| 项 | 值 |
-| --- | --- |
-| 字典 | `DICT_4X4_50` |
-| ID | `7` |
-| 模块 | 6 × 6（含 1 模块黑边） |
-| 尺寸 | 100 mm（主用）/ 80 mm（紧凑） |
-| 模块边长 | 16.67 mm / 13.33 mm |
-| 底板 | 2.0 mm 厚，四周留 20 mm 白边（>1 模块静区） |
-| 图案凸起 | 0.6 mm |
-| 车头方向 | 底板 **凸片** 那一侧朝车头 |
+| 项 | 100 mm 版 | 80 mm 版 |
+| --- | --- | --- |
+| 字典 / ID | `DICT_4X4_50` / `7` | 同 |
+| 模块 | 6 × 6（含 1 模块黑边） | 同 |
+| 模块边长 | 16.7 mm | 13.3 mm |
+| 底板 | 150 × 150 × 2 mm，圆角 R6 | 130 × 130 × 2 mm |
+| 图案凸起 | 0.6 mm | 同 |
+| 中心孔 | Ø3.4 mm（M3 通孔） | 同 |
+| 静区 | 最窄边 1 个模块 | 同 |
+| 方向 | 顶边三角凸片 = 车头 | 同 |
 
-为什么用 4×4：相机在 3.5 m 处，10 cm 标签约 30–45 px，6 个模块 → 每模块 5–7 px，
-`4x4` 仍能稳定解码；再大的字典（5×5/6×6）同样像素下更容易失败。
+**图案故意偏移半个模块**：这样底板圆心正好落在白色模块中央，Ø3.4 中孔不会切到任何黑模块
+（脚本会校验，若换到“中心是黑模块”的 ID 会直接报错）。
 
 ## 文件
 
 ```text
-tag/aruco_4x4_50_id07_100mm.3mf    ← 拓竹直接拖进 Bambu Studio
+tag/aruco_4x4_50_id07_100mm.3mf    ← 拓竹直接拖进 Bambu Studio（推荐）
 tag/aruco_4x4_50_id07_80mm.3mf
 markers/aruco_4x4_50_id07_100mm.png ← 300 dpi，按 100 mm 打印
 markers/aruco_4x4_50_id07_80mm.png
-markers/manifest.json               ← 字典/ID/尺寸，给解码端读
-tools/make_tag.py                   ← 重新生成（改 ID / 尺寸）
+markers/manifest.json               ← 字典/ID/尺寸/孔位，解码端直接读
+tools/make_tag.py                   ← 重新生成（换 ID / 尺寸 / 孔径）
 ```
 
 ## 打印（Bambu Studio）
 
-1. 把 `.3mf` 拖进 Bambu Studio，会看到两个零件：`plate` 和 `aruco_pattern`；
-2. 材料分配：`plate` → 白色，`aruco_pattern` → 黑色（双色打印，图案凸起 0.6 mm）；
-3. 参数：PLA / 0.2 mm 层高 / 无支撑 / 图案面朝上；底板开不开 brim 都行；
-4. 打出来用卡尺量一个黑色模块：应为 **16.7 mm**（100 mm 版），偏差 >0.5 mm 就重打或缩放。
+1. 把 `.3mf` 拖进去 → 两个零件：`plate`（底板）和 `aruco_pattern`（黑色图案）；
+2. 材料：`plate` 白、`aruco_pattern` 黑，双色打印；
+3. 参数：PLA / 0.2 mm 层高 / 图案面朝上 / 无支撑；
+4. 打之前可以用“按对象”看一下：**三角凸片在 +Y 边**，装配时朝车头。
 
-不想双色打印也行：打全白的 `plate`，把 `markers/*.png` 按 100% 打到哑光相纸上，裁好贴上去。
+打出来量一个黑模块：100 mm 版应为 **16.7 mm**，偏差 >0.5 mm 就重打或按比例缩放。
+
+不想双色：只打 `plate`（全白），把 `markers/*.png` 100% 打到哑光相纸裁好贴上去（同样要留静区）。
 
 ## 安装
 
-- 用双面胶/魔术贴固定在机器人顶部**平面**，居中；
-- **底板凸片朝车头**（决定解码出来的朝向符号）；
-- 贴的时候抬高一点避开线缆，保证从上方看图案不被遮挡、不反光（哑光更好）。
+- 中孔 Ø3.4 适合 M3 螺丝：直接穿过底板拧进车顶的 M3 螺纹孔 / 螺母座；平头螺丝更贴合。
+- 想用车顶热熔铜螺母（M3 外径约 4.2）：`python tools/make_tag.py --size-mm 100 --hole-mm 4.2` 重新生成。
+- 双面胶也可以，但**凸片必须朝车头**，这决定了解码出来的朝向符号。
+- 尽量贴在车顶平面、远离线缆遮挡，表面哑光（避免相机高光）。
 
-## 解码
+## 解码（朝向）
 
 ```python
-import cv2
 d = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-det = cv2.aruco.ArucoDetector(d, cv2.aruco.DetectorParameters())
-corners, ids, _ = det.detectMarkers(gray)
+corners, ids, _ = cv2.aruco.ArucoDetector(d, cv2.aruco.DetectorParameters()).detectMarkers(gray)
+tl, tr, br, bl = corners[0][0]                 # 标记自身坐标系
+marker_x = tr - tl; marker_y = bl - tl
+heading_marker_deg = math.degrees(math.atan2(marker_y[1], marker_y[0]))
+# 再用 /api/v1/field 的单应矩阵把方向转到场地坐标系
 ```
 
-OpenCV 返回的 `corners` 顺序是 左上、右上、右下、左下（标记自身的坐标系），
-所以朝向可以直接从角点算：
+OpenCV 返回的角点顺序固定，所以**只要凸片朝车头**，解出的 x 轴方向就是车头方向，不需要试错。
 
-```python
-tl, tr, br, bl = corners[0][0]
-x_m = tr - tl; y_m = bl - tl                 # 标记 +x / +y
-heading_marker = math.degrees(math.atan2(y_m[1], y_m[0]))
-# 再叠加到场地标定（/api/v1/field 的单应矩阵）即可得到场地坐标系里的朝向
-```
+## 多台机器人
 
-字段 `manifest.json` 里给了字典/ID/尺寸，解码端不用改代码就能换尺寸。
-
-## 重新生成
+换 ID 即可：
 
 ```bash
-python tools/make_tag.py --dict 4x4_50 --id 7 --size-mm 100
-python tools/make_tag.py --dict 4x4_50 --id 8 --size-mm 100   # 另一台机器人换 ID
+python tools/make_tag.py --id 8 --size-mm 100
+python tools/make_tag.py --id 9 --size-mm 100
 ```
 
-多台机器人用不同 ID（7、8、9…），避免相机混淆。
-
-![tag preview](markers/preview_100mm.png)
+`manifest.json` 会随生成更新，解码端按字典+ID 区分车辆。
