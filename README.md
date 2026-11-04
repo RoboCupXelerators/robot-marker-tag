@@ -137,3 +137,27 @@ python tools/make_feature.py --shape pad
 ```bash
 python tools/make_handle.py
 ```
+
+## SSL 风格点阵板（装雷达顶，精度 ≤2°）
+
+按 RoboCup SSL 的做法：圆盘点阵，装在雷达顶部（遮挡最少），用点质心解算位置+朝向。
+
+| 型号 | 板径 | 基线 | 大点/小点 | 960px 下理论朝向误差 |
+| --- | --- | --- | --- | --- |
+| `ssl_pattern_d110_t60` | 110 mm | **93.9 mm** | Ø13 / Ø7.5 | **1.9°** ✅ |
+| `ssl_pattern_d90_t60` | 90 mm | 75.4 mm | Ø11 / Ø6.4 | 2.3°（略超） |
+
+- 布局：底边两各一个点在后（-x），单个大点在前（+x）= 车头，另有一个偏右小点消除 180° 歧义；
+- 中心 Ø3.4 通孔（可上 M3 或直接双面胶粘在雷达盖）；
+- 板 3 mm 厚，外缘 0.8 mm 倒角；点凸起 0.6 mm（白板黑点，或反色都行）；
+- 误差按 3.25 px/cm、质心噪声 0.5 px 估算：**基线每加长 10 mm，误差约降 0.2°**。
+
+> 如果 field-ops 把检测分辨率从 960 提到 1920，上表误差直接减半
+> （Ø110 会变成 0.95°，Ø90 变成 1.15°），那样 Ø90 就够用了。
+
+![ssl](tag/preview_ssl_d110.png)
+
+```bash
+python tools/make_ssl_pattern.py --diameter 110 --dot-d 13    # 推荐
+python tools/make_ssl_pattern.py --diameter 90  --dot-d 11    # 空间紧张
+```
