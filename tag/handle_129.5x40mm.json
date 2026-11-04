@@ -1,0 +1,30 @@
+{
+  "part": "handle+marker",
+  "length_mm": 129.5,
+  "width_mm": 40.0,
+  "thick_mm": 6.0,
+  "hole_spacing_mm": 117.5,
+  "hole_d_mm": 3.3,
+  "corner_r_mm": 6.0,
+  "bevel_mm": 0.8,
+  "relief_mm": 0.6,
+  "marker": {
+    "front_block_mm": [
+      40,
+      36
+    ],
+    "back_block_mm": [
+      20,
+      36
+    ],
+    "front_x_mm": [
+      -52.0,
+      -12.0
+    ],
+    "back_x_mm": [
+      20.0,
+      40.0
+    ]
+  },
+  "front_hint": "40x36 大方块那一端 = 车头（孔位都在白色区域）"
+}
