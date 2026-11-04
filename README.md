@@ -179,3 +179,29 @@ python tools/make_ssl_pattern.py --diameter 90  --dot-d 11    # 空间紧张
 ![rod](tag/preview_handle_rod.png)
 
 打印：`handle` 白、`front_knob` 黑（双色）；或整体白色、圆钮贴一小片黑色胶带。
+
+## 颜色与 RCJ 规则
+
+RCJ 足球规则明确：**机器人不得使用黄色或蓝色**（避免与球门/场地元素混淆）
+——见 [RCJ Soccer Entry Lightweight Rules 2023](https://robofinist.by/files/165547/filename/RoboCupJunior-Soccer-Entry-Lightweight-Rules-2023.pdf)
+"Robots are not allowed to be colored yellow or blue in order to avoid interference"。
+
+所以标记色只能从**红 / 白 / 黑 / 其他非黄蓝**里选：
+
+| 配色 | 对比 | 问题 |
+| --- | --- | --- |
+| 黑底 + **红**标记 | 强（黑/绿/白线都分得开） | 无 ✅ |
+| 黑底 + 黄标记 | 强 | **违规** ❌ |
+| 黑底 + 黑标记 | 无 | 看不见 ❌ |
+| 黑底 + 白标记 | 强 | 易与场地白线抢像素 ⚠️ |
+
+推荐 **黑柄 + 红标记**：
+
+- 前 40×10 红条、后 20×10 红条（凸起 0.3 mm，多色打印第二色）；
+- 长轴给朝向（基线 129.5 mm ≈ 42 px，实测主轴噪声 0.1°），前后条长度差给车头方向；
+- 9 个针脚孔位不变（孔距 117.5 / Ø3.3）。
+
+![red](tag/preview_handle_red.png)
+
+> 想要“内嵌”效果（红条与黑面齐平）需要做 0.4 mm 深的凹槽再灌色；
+> 凸起 0.3 mm 版本对相机完全等效，打印更省事，先用这个。

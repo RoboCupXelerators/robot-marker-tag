@@ -7,8 +7,17 @@
   "hole_d_mm": 3.3,
   "corner_r_mm": 7.0,
   "bevel_mm": 0.8,
-  "knob_d_mm": 22.0,
-  "knob_h_mm": 5.0,
-  "knob_x_mm": -44.0,
-  "front_hint": "圆钮那一端 = 车头；长轴给朝向，圆钮给方向"
+  "marker": {
+    "front_strip_mm": [
+      40,
+      10
+    ],
+    "back_strip_mm": [
+      20,
+      10
+    ],
+    "height_mm": 0.3
+  },
+  "front_hint": "40mm 长条那一端 = 车头；长轴给朝向，前后条长度差给方向",
+  "rcj_note": "车身不可用黄/蓝（会与球门颜色混淆），红/白/黑都可以"
 }

@@ -101,11 +101,12 @@ def build():
         off = len(body.vertices)
         body.vertices += m.vertices
         body.triangles += [tuple(off + i for i in t) for t in m.triangles]
-    knob = Mesh()
-    poly = [(KNOB_X + KNOB_D / 2 * math.cos(2 * math.pi * k / 24),
-             KNOB_D / 2 * math.sin(2 * math.pi * k / 24)) for k in range(24)]
-    knob.add_prism(poly, THICK - 0.2, THICK + KNOB_H)
-    return body, knob
+    marker = Mesh()
+    # 前长条 40x10、后短条 20x10，都抬高 0.3mm（多色打印的第二色）
+    for x0, x1 in ((-54.0, -14.0), (24.0, 44.0)):
+        marker.add_prism([(x0, -5.0), (x1, -5.0), (x1, 5.0), (x0, 5.0)],
+                         THICK - 0.1, THICK + 0.3)
+    return body, marker
 
 
 def write(out, body, knob):
@@ -137,8 +138,10 @@ if __name__ == "__main__":
     write(out, body, knob)
     meta = {"part": "handle+marker", "length_mm": LENGTH, "width_mm": WIDTH, "thick_mm": THICK,
             "hole_spacing_mm": HOLE_SPACING, "hole_d_mm": HOLE_D, "corner_r_mm": CORNER_R,
-            "bevel_mm": BEVEL, "knob_d_mm": KNOB_D, "knob_h_mm": KNOB_H, "knob_x_mm": KNOB_X,
-            "front_hint": "圆钮那一端 = 车头；长轴给朝向，圆钮给方向"}
+            "bevel_mm": BEVEL,
+            "marker": {"front_strip_mm": [40, 10], "back_strip_mm": [20, 10], "height_mm": 0.3},
+            "front_hint": "40mm 长条那一端 = 车头；长轴给朝向，前后条长度差给方向",
+            "rcj_note": "车身不可用黄/蓝（会与球门颜色混淆），红/白/黑都可以"}
     (ROOT / "tag" / "handle_rod_129.5x14mm.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"file": str(out.relative_to(ROOT)), **meta}, ensure_ascii=False))
