@@ -1,0 +1,16 @@
+{
+  "shape": "bar",
+  "length_mm": 120.0,
+  "width_mm": 40.0,
+  "front_block_mm": [
+    40.0,
+    40.0
+  ],
+  "back_bar_mm": [
+    40.0,
+    20.0
+  ],
+  "plate_mm": 2.0,
+  "relief_mm": 0.6,
+  "front_hint": "40x40 大方块那一端 = 车头"
+}

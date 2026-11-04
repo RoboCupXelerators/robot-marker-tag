@@ -1,0 +1,9 @@
+{
+  "shape": "pad",
+  "size_mm": 40.0,
+  "margin_mm": 2.0,
+  "corner_triangle_mm": 20.0,
+  "plate_mm": 2.0,
+  "relief_mm": 0.6,
+  "front_hint": "黑色三角所在的角 = 车头左前角"
+}
