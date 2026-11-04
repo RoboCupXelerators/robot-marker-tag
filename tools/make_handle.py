@@ -40,13 +40,23 @@ class Mesh:
             self.triangles.append(tuple(i + k for k in tri))
 
 
+GRIP_HALF_W = 6.0      # 中间握持段半宽（12mm 宽，能握住）
+PAD_HALF_LEN = 32.75   # 两端加宽段长度（x 从 ±32.75 到 ±64.75）
+
+
 def _inside(x, y, sign, a, b, r):
-    """是否在“半个提手”区域内：x 在 sign 一侧，圆角矩形内。"""
+    """半个提手：两端 40mm 宽的手柄垫 + 中间 12mm 握持段（哑铃形）。"""
     if sign * x < -1e-9:
         return False
-    qx = abs(x) - (a - r)
-    qy = abs(y) - (b - r)
-    return math.hypot(max(qx, 0.0), max(qy, 0.0)) <= r
+    # 端部加宽段（圆角 R6）
+    if abs(x) >= PAD_HALF_LEN - 1e-9:
+        qx = abs(x) - (a - r)
+        qy = abs(y) - (b - r)
+        return math.hypot(max(qx, 0.0), max(qy, 0.0)) <= r
+    # 中间握持段：12mm 宽，端部与加宽段相接处按圆角过渡
+    qx = 0.0
+    qy = abs(y) - (GRIP_HALF_W - 2.0)
+    return math.hypot(max(qx, 0.0), max(qy, 0.0)) <= 2.0
 
 
 def _boundary(cx, cy, angle, sign, a, b, r):
@@ -99,8 +109,9 @@ def half_handle(cx, sign) -> Mesh:
         # 孔壁
         mesh.triangles += [(h_bot + k, h_top + k, h_top + j), (h_bot + k, h_top + j, h_bot + j)]
     # 切面封口（x=0 处 40x6 截面，四角带 0.8 倒角），另一侧由镜像半块贴合
-    cap = [(-(b - BEVEL), 0.0), (b - BEVEL, 0.0), (b, BEVEL), (b, THICK - BEVEL),
-           (b - BEVEL, THICK), (-(b - BEVEL), THICK), (-b, THICK - BEVEL), (-b, BEVEL)]
+    gw = GRIP_HALF_W
+    cap = [(-(gw - BEVEL), 0.0), (gw - BEVEL, 0.0), (gw, BEVEL), (gw, THICK - BEVEL),
+           (gw - BEVEL, THICK), (-(gw - BEVEL), THICK), (-gw, THICK - BEVEL), (-gw, BEVEL)]
     start = len(mesh.vertices)
     for y, z in cap:
         mesh.vertices.append((0.0, y, z))
@@ -121,9 +132,9 @@ def build():
         body.triangles += [tuple(base + i for i in tri) for tri in mesh.triangles]
     marker = Mesh()
     top_half = WIDTH / 2 - BEVEL          # 顶面比外轮廓内缩 0.8（倒角后）
-    # 两块都避开两端 Ø3.3 孔：前 40x36，后 20x36（尺寸不同 → 前大后小，方向唯一）
-    marker.add_box(-52.0, -18.0, THICK, -12.0, 18.0, THICK + RELIEF)
-    marker.add_box(20.0, -18.0, THICK, 40.0, 18.0, THICK + RELIEF)
+    # 黑块放在两端加宽垫上、避开 Ø3.3 孔：前 20x24（大），后 12x24（小）
+    marker.add_box(-52.0, -12.0, THICK, -32.0, 12.0, THICK + RELIEF)
+    marker.add_box(32.0, -12.0, THICK, 44.0, 12.0, THICK + RELIEF)
     return body, marker
 
 
@@ -162,9 +173,10 @@ if __name__ == "__main__":
     meta = {"part": "handle+marker", "length_mm": LENGTH, "width_mm": WIDTH, "thick_mm": THICK,
             "hole_spacing_mm": HOLE_SPACING, "hole_d_mm": HOLE_D, "corner_r_mm": CORNER_R,
             "bevel_mm": BEVEL, "relief_mm": RELIEF,
-            "marker": {"front_block_mm": [40, 36], "back_block_mm": [20, 36],
-                       "front_x_mm": [-52.0, -12.0], "back_x_mm": [20.0, 40.0]},
-            "front_hint": "40x36 大方块那一端 = 车头（孔位都在白色区域）"}
+            "grip_width_mm": GRIP_HALF_W * 2,
+            "marker": {"front_block_mm": [20, 24], "back_block_mm": [12, 24],
+                       "front_x_mm": [-52.0, -32.0], "back_x_mm": [32.0, 44.0]},
+            "front_hint": "20x24 大块那一端 = 车头"}
     (ROOT / "tag" / "handle_129.5x40mm.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"file": str(out.relative_to(ROOT)), **meta}, ensure_ascii=False))

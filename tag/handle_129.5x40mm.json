@@ -8,23 +8,24 @@
   "corner_r_mm": 6.0,
   "bevel_mm": 0.8,
   "relief_mm": 0.6,
+  "grip_width_mm": 12.0,
   "marker": {
     "front_block_mm": [
-      40,
-      36
+      20,
+      24
     ],
     "back_block_mm": [
-      20,
-      36
+      12,
+      24
     ],
     "front_x_mm": [
       -52.0,
-      -12.0
+      -32.0
     ],
     "back_x_mm": [
-      20.0,
-      40.0
+      32.0,
+      44.0
     ]
   },
-  "front_hint": "40x36 大方块那一端 = 车头（孔位都在白色区域）"
+  "front_hint": "20x24 大块那一端 = 车头"
 }
